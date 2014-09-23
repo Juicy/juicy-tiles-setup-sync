@@ -13,7 +13,9 @@
         "**/.*",
         "node_modules",
         "bower_components",
-        "preview.png"
+        "preview.png",
+        "Gruntfile.js",
+        "index.html"
     ],
     "dependencies": {
         "polymer": "Polymer/polymer#~0.4.0"
