@@ -69,7 +69,7 @@
             },
             revert: function(){
                 // this.currentValue = JSON.parse(JSON.stringify( this.storedValue ));
-                this.tileList.setup = JSON.parse(JSON.stringify( this.storedValue ));
+                this.tileList.setup = this.storedValue && JSON.parse(JSON.stringify( this.storedValue ));
             },
             isModified: function(){
                 // return JSON.stringify( this.storedValue ) != JSON.stringify( this.currentValue );
