@@ -3,6 +3,8 @@
 -->
 <!-- Import Polymer -->
 <!-- <link rel="import" href="../../polymer/polymer.html"> -->
+<link rel="import" href="../../iron-localstorage/iron-localstorage.html">
+
 <!-- Define your custom element -->
 <dom-module id="juicy-tiles-setup-sync">
     <template>
@@ -11,30 +13,37 @@
                 display: none;
             }
         </style>
+        <iron-localstorage name="{{name}}" value="{{storedValue}}" auto-save-disabled="true" id="storage"></iron-localstorage>
     </template>
     <script>
         Polymer({
             is: "juicy-tiles-setup-sync",
             properties: {
                 storedValue: { type: Object, value: null, observer: "storedValueChanged" },
-                currentValue: { type: Object },
                 autoSave: { type: Boolean },
                 name: { type: String },
                 apiUrl: { type: String, value: "/juicytilessetup" },
                 tileList: { type: Object, value: null },
+                useLocalstorage: { type: Boolean, value: false }
+            },
+            ready: function () {
+                var a = this.storedValue;
             },
             attached: function () {
-                globme = this;
-                this.tileList = this.nextElementSibling;
+                this.set("tileList", this.nextElementSibling);
                 this.tileList.sync = this;
             },
             detached: function () {
                 delete this.tileList.sync;
-                this.tileList = null;
-                // this.currentValue = null;
+                this.set("tileList", null);
             },
             save: function () {
-                this.storedValue = JSON.parse(JSON.stringify(this.tileList.setup));
+                this.set("storedValue", JSON.parse(JSON.stringify(this.tileList.setup)));
+
+                if (this.useLocalstorage) {
+                    this.$.storage.save();
+                    return;
+                }
 
                 // FIXME: temporary workaround for servers not accepting JSON-Patch
                 var req = new XMLHttpRequest();
@@ -47,7 +56,8 @@
                         }
                         console.info("juicy-tile-list configuration saved");
                     }
-                };
+                    this.fire("juicy-tiles-setup-sync-saved");
+                }.bind(this);
                 return req.send(JSON.stringify(this.storedValue));
             },
             revert: function () {
@@ -60,20 +70,24 @@
                 if (this.storedValue === null) {
                     this.storedValueChanged(null, null);
                 } else {
-                    this.storedValue = null;
+                    this.set("storedValue", null);
                 }
             },
             isModified: function () {
                 return JSON.stringify(this.storedValue) != JSON.stringify(this.tileList.setup);
             },
-            storedValueChanged: function (oldVal, newVal) {
-                if (this.tileList) {
-                    var newJson = JSON.stringify(newVal);
-                    if (JSON.stringify(this.tileList.setup) != newJson) {
-                        this.tileList.setup = JSON.parse(newJson);
-                    }
-                    console.log("storedValueChanged", oldVal, newVal);
+            storedValueChanged: function (newVal, oldVal) {
+                if (!this.tileList || !newVal) {
+                    return;
                 }
+
+                var newJson = JSON.stringify(newVal);
+
+                if (JSON.stringify(this.tileList.setup) != newJson) {
+                    this.tileList.setup = JSON.parse(newJson);
+                }
+
+                console.log("storedValueChanged", newVal, oldVal);
             }
         });
     </script>
