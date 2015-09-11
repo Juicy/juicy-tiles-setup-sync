@@ -62,6 +62,7 @@
             },
             revert: function () {
                 this.tileList.setup = this.storedValue && JSON.parse(JSON.stringify(this.storedValue));
+                this.tileList.setupChanged(this.tileList.setup, this.tileList.setup);
             },
             /**
              * Resets the current value.
@@ -85,6 +86,7 @@
 
                 if (JSON.stringify(this.tileList.setup) != newJson) {
                     this.tileList.setup = JSON.parse(newJson);
+                    this.tileList.setupChanged(this.tileList.setup, this.tileList.setup);
                 }
 
                 console.log("storedValueChanged", newVal, oldVal);
