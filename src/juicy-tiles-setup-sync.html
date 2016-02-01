@@ -28,7 +28,6 @@
                 useLocalstorage: { type: Boolean, value: false }
             },
             ready: function () {
-                var a = this.storedValue;
             },
             attached: function () {
                 this.set("tileList", this.nextElementSibling);
@@ -85,7 +84,7 @@
                     this.tileList.setup = JSON.parse(newJson);
                 }
 
-                console.log("storedValueChanged", newVal, oldVal);
+                //console.log("storedValueChanged", newVal, oldVal);
             }
         });
     </script>
