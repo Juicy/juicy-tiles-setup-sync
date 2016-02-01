@@ -20,7 +20,7 @@
         Polymer({
             is: "juicy-tiles-setup-sync",
             properties: {
-                storedValue: { type: Object, value: null, observer: "storedValueChanged" },
+                storedValue: { type: Object, value: null, observer: "storedValueChanged", notify: true },
                 autoSave: { type: Boolean },
                 name: { type: String },
                 apiUrl: { type: String, value: "/juicytilessetup" },
