@@ -14,7 +14,7 @@
                 display: none;
             }
         </style>
-        <iron-localstorage name="{{name}}" value="{{storedValue}}" auto-save-disabled="true" id="storage"></iron-localstorage>
+        <iron-localstorage name="{{name}}" value="{{storedValue}}" auto-save-disabled="true" id="storage" on-iron-localstorage-load-empty="initValue"></iron-localstorage>
     </template>
     <script>
         Polymer({
@@ -28,6 +28,7 @@
                 useLocalstorage: { type: Boolean, value: false }
             },
             ready: function () {
+                this.originalValue = this.storedValue;
             },
             attached: function () {
                 this.set("tileList", this.nextElementSibling);
@@ -72,6 +73,9 @@
             },
             isModified: function () {
                 return JSON.stringify(this.storedValue) != JSON.stringify(this.tileList.setup);
+            },
+            initValue: function () {
+                this.set("storedValue", this.originalValue);
             },
             storedValueChanged: function (newVal, oldVal) {
                 if (!this.tileList || !newVal) {
